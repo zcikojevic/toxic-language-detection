@@ -14,9 +14,24 @@ from sklearn.preprocessing import Normalizer
 
 def _load_comments(comments_file):
     data = pd.read_csv(comments_file, sep=',')
+    
     X, y = np.array(data['comment_text']), np.array(data[data.columns[2:]])
 
-    return X[:100], y[:100, :]
+    binary_labels = np.max(y, axis=1)
+    num_toxic_comments = binary_labels.sum()
+    num_non_toxic_comments = y.shape[0] - num_toxic_comments
+
+    non_toxic_indices = np.argwhere(binary_labels == 0).flatten()
+
+    comments_to_be_removed = np.random.choice(
+                             non_toxic_indices,
+                             size=num_non_toxic_comments-num_toxic_comments+1,
+                             replace=False)
+
+    X = np.delete(X, comments_to_be_removed)
+    y = np.delete(y, comments_to_be_removed, axis=0)
+
+    return X, y
 
 
 def _kfold_cv(clf, param_grid, X, y, k, verbose=False):
@@ -31,7 +46,7 @@ def _kfold_cv(clf, param_grid, X, y, k, verbose=False):
     return gs.best_estimator_, gs.best_params_
 
 
-def run(param_grid, classifier, multilabel=False, k_folds=5, comments_file='../../data/train.csv'):
+def run(param_grid, classifier, multilabel=False, k_folds=5, comments_file='C:\\Users\\jasmi\\FER\\apt\\projekt\\data\\train.csv'):
     comments_X, comments_y = _load_comments(comments_file)
 
     clf = OneVsRestClassifier(
