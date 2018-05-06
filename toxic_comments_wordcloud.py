@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from nltk.corpus import stopwords
-from wordcloud import WordCloud
-
+import sys
+from wordcloud import WordCloud, ImageColorGenerator
+from PIL import Image
 
 def _load_comments(comments_file):
     data = pd.read_csv(comments_file, sep=',')
@@ -13,11 +14,14 @@ def _load_comments(comments_file):
 
     return '\n'.join(X[toxic_indices])
 
-text = _load_comments('C:\\Users\\jasmi\\FER\\apt\\projekt\\data\\train_binary_labels.csv')
+flame_coloring = np.array(Image.open(sys.argv[1]))
+image_colors = ImageColorGenerator(flame_coloring)
+
+text = _load_comments('../../data/train_binary_labels.csv')
 wordcloud = WordCloud(font_path=None,
                       relative_scaling = 1.0,
                       stopwords = set(stopwords.words('english'))
                       ).generate(text)
-plt.imshow(wordcloud, interpolation='bilinear')
+plt.imshow(wordcloud.recolor(color_func=image_colors), interpolation='bilinear')
 plt.axis("off")
 plt.show()

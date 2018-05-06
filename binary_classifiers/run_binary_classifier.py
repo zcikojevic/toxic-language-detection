@@ -36,14 +36,11 @@ def _load_comments(comments_file):
     return X, y
 
 
-def _kfold_cv(clf, param_grid, X, y, k, verbose=False):
+def _kfold_cv(clf, param_grid, X, y, k, verbose=0):
     inner = KFold(n_splits=k)
 
-    gs = GridSearchCV(clf, param_grid, cv=inner)
+    gs = GridSearchCV(clf, param_grid, cv=inner, verbose=verbose)
     gs.fit(X, y)
-
-    if verbose:
-        pprint(gs.cv_results_)
 
     return gs.best_estimator_, gs.best_params_
 
@@ -61,11 +58,10 @@ def run(param_grid, classifier, k_folds=5, comments_file='../../data/train_binar
 
     comments_X_train, comments_X_test, comments_y_train, comments_y_test = train_test_split(comments_X, comments_y, train_size=0.7, random_state=1)
 
-
-    best_estimator, best_params = _kfold_cv(clf, param_grid, comments_X_train, comments_y_train, k_folds, verbose=True)
+    best_estimator, best_params = _kfold_cv(clf, param_grid, comments_X_train, comments_y_train, k_folds, verbose=1)
 
     print('=================  Classification report  =================')
-    print(classification_report(comments_y_test, classifier.evaluate(comments_X_test)))
+    print(classification_report(comments_y_test, best_estimator.predict(comments_X_test)))
 
-    print('=================     Best parameters     =================')
+    pprint('=================     Best parameters     =================')
     print(best_params)

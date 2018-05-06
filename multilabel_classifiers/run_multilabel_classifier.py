@@ -34,7 +34,7 @@ def _load_comments(comments_file):
     return X, y
 
 
-def _kfold_cv(clf, param_grid, X, y, k, verbose=False):
+def _kfold_cv(clf, param_grid, X, y, k, verbose=0):
     inner = KFold(n_splits=k)
 
     gs = GridSearchCV(clf, param_grid, cv=inner)
@@ -46,7 +46,7 @@ def _kfold_cv(clf, param_grid, X, y, k, verbose=False):
     return gs.best_estimator_, gs.best_params_
 
 
-def run(param_grid, classifier, multilabel=False, k_folds=5, comments_file='C:\\Users\\jasmi\\FER\\apt\\projekt\\data\\train.csv'):
+def run(param_grid, classifier, multilabel=False, k_folds=5, comments_file='../../../data/comments.csv'):
     comments_X, comments_y = _load_comments(comments_file)
 
     clf = OneVsRestClassifier(
@@ -59,10 +59,10 @@ def run(param_grid, classifier, multilabel=False, k_folds=5, comments_file='C:\\
 
     comments_X_train, comments_X_test, comments_y_train, comments_y_test = train_test_split(comments_X, comments_y, train_size=0.7, random_state=1)
 
-    best_estimator, best_params = _kfold_cv(clf, param_grid, comments_X_train, comments_y_train, k_folds)
+    best_estimator, best_params = _kfold_cv(clf, param_grid, comments_X_train, comments_y_train, k_folds, verbose=1)
 
     print('=================  Classification report  =================')
     print(classification_report(comments_y_test, best_estimator.predict(comments_X_test)))
 
     print('=================     Best parameters     =================')
-    print(best_params)
+    pprint(best_params)
