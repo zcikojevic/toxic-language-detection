@@ -25,4 +25,4 @@ def multilabel_to_binary(df_input_file, df_output_file):
     df_binary_labels.to_csv(df_output_file)
 
 if __name__ == '__main__':
-    mutlilabel_to_binary(argv[1], argv[2])
+    multilabel_to_binary(argv[1], argv[2])
