@@ -37,7 +37,7 @@ def _load_comments(comments_file):
 def _kfold_cv(clf, param_grid, X, y, k, verbose=0):
     inner = KFold(n_splits=k)
 
-    gs = GridSearchCV(clf, param_grid, cv=inner)
+    gs = GridSearchCV(clf, param_grid, cv=inner, verbose=1)
     gs.fit(X, y)
 
     if verbose:
