@@ -26,7 +26,7 @@ def create_model(max_features):
     return model
 
 
-comments_X, comments_y = _load_comments('../../data/train_binary_labels.csv')
+comments_X, comments_y = _load_comments('../../../data/train_binary_labels.csv')
 max_features = 20000
 tokenizer = Tokenizer(num_words=max_features)
 tokenizer.fit_on_texts(list(comments_X))
@@ -38,6 +38,8 @@ comments_X_train, comments_X_test, comments_y_train, comments_y_test = train_tes
 model = create_model(comments_X_train.shape[0])
 
 hist = model.fit(comments_X_train, comments_y_train, batch_size=64, epochs=1, validation_split=0.2)
+
+model.save('keras_lstm_binary.h5')
 
 print('\n=================  Classification report  =================')
 
