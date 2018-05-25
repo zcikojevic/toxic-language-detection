@@ -12,11 +12,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import Normalizer
 
 
-def _load_comments(comments_file):
-    data = pd.read_csv(comments_file, sep=',')
-    
-    X, y = np.array(data['comment_text']), np.array(data[data.columns[2:]])
-
+def _remove_imbalances(X, y):
     binary_labels = np.max(y, axis=1)
     num_toxic_comments = binary_labels.sum()
     num_non_toxic_comments = y.shape[0] - num_toxic_comments
@@ -31,6 +27,14 @@ def _load_comments(comments_file):
     X = np.delete(X, comments_to_be_removed)
     y = np.delete(y, comments_to_be_removed, axis=0)
 
+    return X, y
+
+
+def _load_comments(comments_file):
+    data = pd.read_csv(comments_file, sep=',')
+
+    X, y = np.array(data['comment_text']), np.array(data[data.columns[2:]])
+    X, y = _remove_imbalances(X, y)
     return X, y
 
 
