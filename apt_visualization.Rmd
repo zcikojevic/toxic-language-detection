@@ -122,3 +122,15 @@ df$counts <- as.numeric(as.character(df$counts))
 ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
 ```
 
+```{r}
+# labels distribution after oversampling
+
+commentLabels <- c("toxic", "severe toxic", "obscene", "threat", "insult", "identity hate")
+counts <- c(9445, 4254, 8449, 5371, 7877, 4444)
+
+df <- as.data.frame(cbind(commentLabels, counts))
+df$counts <- as.numeric(as.character(df$counts))
+
+ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
+```
+
