@@ -12,7 +12,38 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import Normalizer
 
 
-def _remove_imbalances(X, y):
+def remove_toxic_imbalances(X, y):
+    num_classes = y.shape[1]
+    
+    toxic_indices = {i:[] for i in range(num_classes)}
+    for example_count, label in enumerate(y):
+        for class_index, label in enumerate(label):
+            if label == 1:
+                toxic_indices[class_index].append(example_count)
+    
+    for key, value in toxic_indices.items():
+        print(key, len(value))
+    
+    binary_labels = np.max(y, axis=1)
+    classes_counts = np.sum(y, axis=0)
+    most_common_class, most_common_class_count = np.argmax(classes_counts), np.max(classes_counts)
+    print(most_common_class, most_common_class_count)
+    print(classes_counts)
+    
+    comments_to_resample = {}
+    for class_index, all_class_indices in toxic_indices.items():
+        comments_to_resample[class_index] = np.random.choice(all_class_indices,
+                                               size=most_common_class_count - classes_counts[class_index],
+                                               replace=True)
+    
+    for class_index, indices_to_resample in comments_to_resample.items():
+        print(class_index, len(indices_to_resample) + classes_counts[class_index])
+    
+    #for class_index, indices_to_resample in comm
+    return [], []
+    #pprint(toxic_indices)
+
+def remove_toxic_nontoxic_imbalances(X, y):
     binary_labels = np.max(y, axis=1)
     num_toxic_comments = binary_labels.sum()
     num_non_toxic_comments = y.shape[0] - num_toxic_comments
@@ -26,7 +57,7 @@ def _remove_imbalances(X, y):
 
     X = np.delete(X, comments_to_be_removed)
     y = np.delete(y, comments_to_be_removed, axis=0)
-
+    
     return X, y
 
 
@@ -34,7 +65,10 @@ def _load_comments(comments_file):
     data = pd.read_csv(comments_file, sep=',')
 
     X, y = np.array(data['comment_text']), np.array(data[data.columns[2:]])
-    X, y = _remove_imbalances(X, y)
+    
+    X, y = remove_toxic_imbalances(X, y)
+    #X, y = remove_toxic_nontoxic_imbalances(X, y)
+    
     return X, y
 
 
