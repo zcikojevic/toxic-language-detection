@@ -1,5 +1,5 @@
 ---
-title: "apt_wordcloud"
+title: "apt_visualization"
 author: "Jasmin Redzepovic"
 date: "May 25, 2018"
 output: html_document
@@ -111,6 +111,14 @@ sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% word
 ```
 
 ```{r}
+# labels distribution
 
+commentLabels <- c("toxic", "severe toxic", "obscene", "threat", "insult", "identity hate")
+counts <- c(15294, 1595, 8449, 478, 7877, 1405)
+
+df <- as.data.frame(cbind(commentLabels, counts))
+df$counts <- as.numeric(as.character(df$counts))
+
+ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
 ```
 
