@@ -1,0 +1,116 @@
+---
+title: "apt_wordcloud"
+author: "Jasmin Redzepovic"
+date: "May 25, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tm)
+library(NLP)
+library(wordcloud2)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+```
+
+```{r}
+comments <- read.csv("./data/train.csv", stringsAsFactors = F)
+
+clean <- filter(comments, toxic == 0 & severe_toxic == 0 & obscene == 0 & threat == 0 & insult == 0 & identity_hate == 0)
+
+toxic <- filter(comments, toxic == 1)
+
+severe_toxic <- filter(comments, severe_toxic == 1)
+
+obscene <- filter(comments, obscene == 1)
+
+threat <- filter(comments, threat == 1)
+
+insult <- filter(comments, insult == 1)
+
+identity_hate <- filter(comments, identity_hate == 1)
+```
+
+```{r}
+# identity hate
+
+Corpus(VectorSource(identity_hate$comment_text)) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+# clean
+
+Corpus(VectorSource(clean$comment_text[1:1000])) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+# toxic
+
+Corpus(VectorSource(toxic$comment_text[1:10000])) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+# severe toxic
+
+Corpus(VectorSource(severe_toxic$comment_text)) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+# obscene
+
+Corpus(VectorSource(obscene$comment_text)) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+# insult
+
+Corpus(VectorSource(insult$comment_text)) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+# threat
+
+Corpus(VectorSource(threat$comment_text)) %>% tm_map(removePunctuation) %>% tm_map(content_transformer(tolower)) %>% 
+  tm_map(removeWords, stopwords("english")) %>% tm_map(stripWhitespace) -> docs
+
+m <- as.matrix(TermDocumentMatrix(docs))
+
+sort(rowSums(m),decreasing=TRUE) %>% data.frame(word = names(.),freq=.) %>% wordcloud2()
+```
+
+```{r}
+
+```
+
