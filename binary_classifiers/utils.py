@@ -24,5 +24,25 @@ def multilabel_to_binary(df_input_file, df_output_file):
 
     df_binary_labels.to_csv(df_output_file)
 
+
+def construct_test_set(test_set_file, test_set_labels, output_file):
+    #columns: id, comment_text
+    test_set_df = pd.read_csv(test_set_file, sep=',')
+    
+    #columns: id, toxic, severe_toxic...
+    test_set_labels_df = pd.read_csv(test_set_labels, sep=',')
+    
+    #columns: id, comment_text, toxic, severe_toxic...
+    #contains unlabeled comments, those labels are = -1
+    joint = test_set_df.merge(test_set_labels_df)
+    
+    labels = joint.values[:, 2:]
+    #retain all the labels that do not contain -1, i.e. zeros or ones
+    labeled_comments_indices = np.argwhere(np.min(labels, axis=1) != -1).flatten()
+    properly_labeled_comments = joint.iloc[labeled_comments_indices]
+    properly_labeled_comments.to_csv(output_file, index=False)
+
 if __name__ == '__main__':
     multilabel_to_binary(argv[1], argv[2])
+    #construct_test_set(argv[1], argv[2], argv[3])
+
