@@ -119,7 +119,9 @@ counts <- c(15294, 1595, 8449, 478, 7877, 1405)
 df <- as.data.frame(cbind(commentLabels, counts))
 df$counts <- as.numeric(as.character(df$counts))
 
-ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
+# ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity", fill = c("#689F38", "#616161","#616161","#689F38","#689F38","#FFA000")) + geom_hline(yintercept = c(mean(counts), mean(counts) + 0.5*sd(counts), mean(counts) - 0.5*sd(counts)), color = "black")
+ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity", fill = c("red", "#616161","#616161","red","red","red")) + geom_hline(yintercept = c(mean(counts), mean(counts) + 0.5*sd(counts), mean(counts) - 0.5*sd(counts)), color = "black")
+
 ```
 
 ```{r}
@@ -132,5 +134,33 @@ df <- as.data.frame(cbind(commentLabels, counts))
 df$counts <- as.numeric(as.character(df$counts))
 
 ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
+```
+
+```{r}
+# toxic non-toxic distribution
+
+commentLabels <- c("toxic", "non-toxic")
+counts <- c(143346, 39840)
+
+df <- as.data.frame(cbind(commentLabels, counts))
+df$counts <- as.numeric(as.character(df$counts))
+
+ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
+```
+
+```{r}
+# toxic non-toxic distribution after undersampling
+
+commentLabels <- c("toxic", "non-toxic")
+counts <- c(39839, 39840)
+
+df <- as.data.frame(cbind(commentLabels, counts))
+df$counts <- as.numeric(as.character(df$counts))
+
+ggplot(df, aes(x = commentLabels, y = counts)) + geom_bar(stat = "identity")
+```
+
+```{r}
+
 ```
 
