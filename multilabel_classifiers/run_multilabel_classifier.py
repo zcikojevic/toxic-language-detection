@@ -127,3 +127,4 @@ def run(param_grid, classifier, multilabel=False, k_folds=5, comments_file='../.
 
     print('=================     Best parameters     =================')
     pprint(best_params)
+    return best_estimator
