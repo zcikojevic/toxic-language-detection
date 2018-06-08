@@ -92,7 +92,7 @@ def _load_comments(comments_file):
     X, y = remove_toxic_imbalances(X, y)
     X, y = remove_toxic_nontoxic_imbalances(X, y)
 
-    return X, y
+    return X[:100], y[:100]
 
 
 def _kfold_cv(clf, param_grid, X, y, k, verbose=0):
